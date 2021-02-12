@@ -18,9 +18,16 @@
 
       <section class="catalog">
 
-        <ProductList :products="productsData.items" />
+        <Preloader v-if="preloader" />
 
-        <BasePagination />
+        <transition name="fade">
+          <ProductList v-if="!preloader" :products="products" />
+        </transition>
+
+        <transition name="fade">
+          <BasePagination v-if="!preloader" @change-page="page = $event" :page="page" :count="countProducts" :per-page="productsPerPage" />
+        </transition>
+
       </section>
     </div>
   </main>
@@ -28,8 +35,9 @@
 
 <script>
 /* eslint-disable space-before-function-paren */
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import declOfNum from '@/helpers/declOfNum'
+import Preloader from '@/components/base/Preloader.vue'
 import BasePagination from '@/components/base/BasePagination.vue'
 import ProductList from '@/components/product/ProductList.vue'
 import ProductFilter from '@/components/product/ProductFilter.vue'
@@ -37,7 +45,6 @@ import ProductFilter from '@/components/product/ProductFilter.vue'
 export default {
   data() {
     return {
-      productsData: [],
       filterPriceFrom: 0,
       filterPriceTo: 0,
       filterCategoryId: 0,
@@ -48,15 +55,32 @@ export default {
     }
   },
   filters: { declOfNum },
-  components: { ProductList, ProductFilter, BasePagination },
+  components: { ProductList, ProductFilter, BasePagination, Preloader },
   computed: {
     countProducts() {
-      // return this.productsData ? this.productsData.pagination.total : 0
-      return 5
+      return this.productsData.pagination ? this.productsData.pagination.total : 0
+    },
+    ...mapState({
+      productsData: state => state.productsData,
+      preloader: state => state.isProductsLoading
+    }),
+    products() {
+      // eslint-disable-next-line arrow-body-style
+      return this.productsData.items.map((item) => {
+        return {
+          title: item.title,
+          price: item.price,
+          id: item.id,
+          mainImage: item.colors[0].gallery ? item.colors[0].gallery[0].file.url : 'img/no-product-image-available.png'
+        }
+      })
     }
   },
   methods: {
-    ...mapActions(['loadProducts'])
+    ...mapActions(['loadProducts']),
+    paginate() {
+      this.$emit('paginate', this.page)
+    }
   },
   created() {
     this.loadProducts(
@@ -69,10 +93,29 @@ export default {
         minPrice: this.filterPriceFrom,
         maxPrice: this.filterPriceTo
       })
-      .then((response) => {
-        this.productsData = response.data
-        console.log(this.productsData)
-      })
+  },
+  watch: {
+    page() {
+      this.loadProducts(
+        {
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo
+        })
+    }
   }
 }
 </script>
+
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+</style>

@@ -1,44 +1,27 @@
 <template>
   <ul class="catalog__pagination pagination">
     <li class="pagination__item">
-      <a class="pagination__link pagination__link--arrow pagination__link--disabled" aria-label="Предыдущая страница">
+      <a class="pagination__link pagination__link--arrow"
+       href="#"
+      :class="{'pagination__link--disabled':page === 1}"
+      @click.prevent="paginate(page - 1)"
+      aria-label="Предыдущая страница">
         <svg width="8" height="14" fill="currentColor">
           <use xlink:href="#icon-arrow-left"></use>
         </svg>
       </a>
     </li>
-    <li class="pagination__item">
-      <a class="pagination__link pagination__link--current">
-        1
+    <li class="pagination__item" v-for="pageNumber in pages" :key="pageNumber">
+      <a class="pagination__link" href="#" :class="{'pagination__link--current' : pageNumber===page}"
+      @click.prevent="paginate(pageNumber)">
+        {{ pageNumber }}
       </a>
     </li>
     <li class="pagination__item">
-      <a class="pagination__link" href="#">
-        2
-      </a>
-    </li>
-    <li class="pagination__item">
-      <a class="pagination__link" href="#">
-        3
-      </a>
-    </li>
-    <li class="pagination__item">
-      <a class="pagination__link" href="#">
-        4
-      </a>
-    </li>
-    <li class="pagination__item">
-      <a class="pagination__link" href="#">
-        ...
-      </a>
-    </li>
-    <li class="pagination__item">
-      <a class="pagination__link" href="#">
-        10
-      </a>
-    </li>
-    <li class="pagination__item">
-      <a class="pagination__link pagination__link--arrow" href="#" aria-label="Следующая страница">
+      <a class="pagination__link pagination__link--arrow"
+      :class="{'pagination__link--disabled':page === pages}"
+      @click.prevent="paginate(page + 1)"
+      href="#" aria-label="Следующая страница">
         <svg width="8" height="14" fill="currentColor">
           <use xlink:href="#icon-arrow-right"></use>
         </svg>
@@ -48,7 +31,24 @@
 </template>
 
 <script>
+/* eslint-disable space-before-function-paren */
 export default {
-
+  props: {
+    page: Number,
+    count: Number,
+    perPage: Number
+  },
+  computed: {
+    pages() {
+      return Math.ceil(this.count / this.perPage)
+    }
+  },
+  methods: {
+    paginate(page) {
+      if (page >= 1 && page <= this.pages) {
+        this.$emit('change-page', page)
+      }
+    }
+  }
 }
 </script>

@@ -9,25 +9,7 @@ import { API_BASE_URL } from '../config'
 Vue.use(Vuex)
 
 const productModule = {
-  mutations: {
-  },
-  actions: {
-    loadProducts(context, { page, limit, categoryId, minPrice, maxPrice, materialIds, seasonIds }) {
-      return axios
-        .get(`${API_BASE_URL}/api/products`, {
-          params: {
-            categoryId: categoryId,
-            materialIds: materialIds,
-            seasonIds: seasonIds,
-            page: page,
-            limit: limit,
-            minPrice: minPrice,
-            maxPrice: maxPrice
-          }
-        })
-        // .then((response) => this.products = response.data)
-    }
-  }
+
 }
 
 const cartModule = {
@@ -47,7 +29,40 @@ const orderModule = {
 export default new Vuex.Store({
   state: {
     userAccessKey: null,
-    products: []
+    productsData: {},
+    isProductsLoading: false
+  },
+  mutations: {
+    loadProd(state, products) {
+      state.productsData = products
+    },
+    loaderOn(state) {
+      state.isProductsLoading = true
+    },
+    loaderOff(state) {
+      state.isProductsLoading = false
+    }
+  },
+  actions: {
+    loadProducts({ commit }, { page, limit, categoryId, minPrice, maxPrice, materialIds, seasonIds }) {
+      commit('loaderOn')
+      setTimeout(() => {
+        axios
+          .get(`${API_BASE_URL}/api/products`, {
+            params: {
+              categoryId: categoryId,
+              materialIds: materialIds,
+              seasonIds: seasonIds,
+              page: page,
+              limit: limit,
+              minPrice: minPrice,
+              maxPrice: maxPrice
+            }
+          })
+          .then((response) => commit('loadProd', response.data))
+          .then(() => commit('loaderOff'))
+      }, 0)
+    }
   },
   modules: {
     productModule: productModule,
