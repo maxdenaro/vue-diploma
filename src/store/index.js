@@ -9,32 +9,30 @@ import { API_BASE_URL } from '../config'
 Vue.use(Vuex)
 
 const productModule = {
-
-}
-
-const cartModule = {
-  mutations: {
-  },
-  actions: {
-  }
-}
-
-const orderModule = {
-  mutations: {
-  },
-  actions: {
-  }
+  namespaced: true
 }
 
 export default new Vuex.Store({
   state: {
     userAccessKey: null,
     productsData: {},
+    categoriesData: [],
+    materialsData: [],
+    seasonsData: [],
     isProductsLoading: false
   },
   mutations: {
     loadProd(state, products) {
       state.productsData = products
+    },
+    loadCat(state, categories) {
+      state.categoriesData = categories
+    },
+    loadMat(state, materials) {
+      state.materialsData = materials
+    },
+    loadSeas(state, seasons) {
+      state.seasonsData = seasons
     },
     loaderOn(state) {
       state.isProductsLoading = true
@@ -62,11 +60,39 @@ export default new Vuex.Store({
           .then((response) => commit('loadProd', response.data))
           .then(() => commit('loaderOff'))
       }, 0)
+    },
+    loadCategories({ commit }) {
+      setTimeout(() => {
+        axios
+          .get(`${API_BASE_URL}/api/productCategories`)
+          .then((response) => {
+            commit('loadCat', response.data.items)
+            console.log(response.data)
+          })
+      }, 0)
+    },
+    loadMaterials({ commit }) {
+      setTimeout(() => {
+        axios
+          .get(`${API_BASE_URL}/api/materials`)
+          .then((response) => {
+            commit('loadMat', response.data.items)
+            console.log(response.data)
+          })
+      }, 0)
+    },
+    loadSeasons({ commit }) {
+      setTimeout(() => {
+        axios
+          .get(`${API_BASE_URL}/api/seasons`)
+          .then((response) => {
+            commit('loadSeas', response.data.items)
+            console.log(response.data)
+          })
+      }, 0)
     }
   },
   modules: {
-    productModule: productModule,
-    cartModule: cartModule,
-    orderModule: orderModule
+    productModule: productModule
   }
 })

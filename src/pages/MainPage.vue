@@ -14,7 +14,7 @@
 
     <div class="content__catalog">
 
-      <ProductFilter />
+      <ProductFilter :categories="categories" :materials="materials" :seasons="seasonsData" />
 
       <section class="catalog">
 
@@ -62,9 +62,13 @@ export default {
     },
     ...mapState({
       productsData: state => state.productsData,
-      preloader: state => state.isProductsLoading
+      preloader: state => state.isProductsLoading,
+      categoriesData: state => state.categoriesData,
+      materialsData: state => state.materialsData,
+      seasonsData: state => state.seasonsData
     }),
     products() {
+      // временное решение, пока не готова апишка
       // eslint-disable-next-line arrow-body-style
       return this.productsData.items.map((item) => {
         return {
@@ -74,15 +78,26 @@ export default {
           mainImage: item.colors[0].gallery ? item.colors[0].gallery[0].file.url : 'img/no-product-image-available.png'
         }
       })
+    },
+    categories() {
+      // временное решение, пока не готова апишка
+      return this.categoriesData.filter((item) => item.title !== 'test')
+    },
+    materials() {
+      // временное решение, пока не готова апишка
+      return this.materialsData.filter((item) => item.title !== 'test')
     }
   },
   methods: {
-    ...mapActions(['loadProducts']),
+    ...mapActions(['loadProducts', 'loadCategories', 'loadMaterials', 'loadSeasons']),
     paginate() {
       this.$emit('paginate', this.page)
     }
   },
   created() {
+    this.loadCategories()
+    this.loadMaterials()
+    this.loadSeasons()
     this.loadProducts(
       {
         categoryId: this.filterCategoryId,
