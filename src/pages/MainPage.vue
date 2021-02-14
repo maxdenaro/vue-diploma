@@ -14,7 +14,13 @@
 
     <div class="content__catalog">
 
-      <ProductFilter />
+      <ProductFilter
+        :price-from.sync="filterPriceFrom"
+        :price-to.sync="filterPriceTo"
+        :category-id.sync="filterCategoryId"
+        :filt-materials.sync="filterMaterials"
+        :filt-seasons.sync="filterSeasons"
+      />
 
       <section class="catalog">
 
@@ -97,6 +103,66 @@ export default {
   },
   watch: {
     page() {
+      this.loadProducts(
+        {
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo
+        })
+    },
+    filterPriceFrom() {
+      this.loadProducts(
+        {
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo
+        })
+    },
+    filterPriceTo() {
+      this.loadProducts(
+        {
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo
+        })
+    },
+    filterCategoryId() {
+      this.loadProducts(
+        {
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo
+        })
+    },
+    filterMaterials() {
+      this.loadProducts(
+        {
+          categoryId: this.filterCategoryId,
+          materialIds: this.filterMaterials,
+          seasonIds: this.filterSeasons,
+          page: this.page,
+          limit: this.productsPerPage,
+          minPrice: this.filterPriceFrom,
+          maxPrice: this.filterPriceTo
+        })
+    },
+    filterSeasons() {
       this.loadProducts(
         {
           categoryId: this.filterCategoryId,

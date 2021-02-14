@@ -13,9 +13,10 @@
 
   .loader {
     height: 100%;
-    padding-top: 150px;
+    width: 100%;
+    top: 150px;
     display: flex;
-    position: relative;
+    position: absolute;
     justify-content: center;
   }
 

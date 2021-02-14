@@ -65,30 +65,21 @@ export default new Vuex.Store({
       setTimeout(() => {
         axios
           .get(`${API_BASE_URL}/api/productCategories`)
-          .then((response) => {
-            commit('loadCat', response.data.items)
-            console.log(response.data)
-          })
+          .then((response) => commit('loadCat', response.data.items))
       }, 0)
     },
     loadMaterials({ commit }) {
       setTimeout(() => {
         axios
           .get(`${API_BASE_URL}/api/materials`)
-          .then((response) => {
-            commit('loadMat', response.data.items)
-            console.log(response.data)
-          })
+          .then((response) => commit('loadMat', response.data.items))
       }, 0)
     },
     loadSeasons({ commit }) {
       setTimeout(() => {
         axios
           .get(`${API_BASE_URL}/api/seasons`)
-          .then((response) => {
-            commit('loadSeas', response.data.items)
-            console.log(response.data)
-          })
+          .then((response) => commit('loadSeas', response.data.items))
       }, 0)
     }
   },
