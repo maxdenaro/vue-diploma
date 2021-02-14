@@ -18,7 +18,7 @@
         <label class="form__label form__label--select">
           <select class="form__select" type="text" name="category">
             <option value="0">Все категории</option>
-            <option :value="category.id" v-for="category in categories"
+            <option :value="category.id" v-for="category in categoriesComp"
             :key="category.id">{{ category.title }}</option>
           </select>
         </label>
@@ -27,7 +27,7 @@
       <fieldset class="form__block">
         <legend class="form__legend">Материал</legend>
         <ul class="check-list">
-          <li class="check-list__item" v-for="material in materials" :key="material.id">
+          <li class="check-list__item" v-for="material in materialsComp" :key="material.id">
             <label class="check-list__label">
               <input class="check-list__check sr-only" type="checkbox" name="material" :value="material.id">
               <span class="check-list__desc">
@@ -42,7 +42,7 @@
       <fieldset class="form__block">
         <legend class="form__legend">Коллекция</legend>
         <ul class="check-list">
-          <li class="check-list__item" v-for="season in seasons" :key="season.id">
+          <li class="check-list__item" v-for="season in seasonsData" :key="season.id">
             <label class="check-list__label">
               <input class="check-list__check sr-only" type="checkbox" name="collection" :value="season.id">
               <span class="check-list__desc">
@@ -65,11 +65,37 @@
 </template>
 
 <script>
+/* eslint-disable space-before-function-paren */
+import { mapActions, mapState } from 'vuex'
+
 export default {
   props: {
-    categories: Array,
-    materials: Array,
-    seasons: Array
+    // categories: Array,
+    // materials: Array,
+    // seasons: Array
+  },
+  computed: {
+    ...mapState({
+      categoriesData: state => state.categoriesData,
+      materialsData: state => state.materialsData,
+      seasonsData: state => state.seasonsData
+    }),
+    categoriesComp() {
+      // временное решение, пока не готова апишка
+      return this.categoriesData.filter((item) => item.title !== 'test')
+    },
+    materialsComp() {
+      // временное решение, пока не готова апишка
+      return this.materialsData.filter((item) => item.title !== 'test')
+    }
+  },
+  methods: {
+    ...mapActions(['loadCategories', 'loadMaterials', 'loadSeasons'])
+  },
+  created() {
+    this.loadCategories()
+    this.loadMaterials()
+    this.loadSeasons()
   }
 }
 </script>
