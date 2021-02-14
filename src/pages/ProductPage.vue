@@ -3,29 +3,29 @@
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
+          <router-link class="breadcrumbs__link" :to="{name: 'main'}">
             Каталог
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="#">
-            Носки
-          </a>
+          <router-link class="breadcrumbs__link" :to="{name: 'main'}" v-if="detailProductData.category">
+            {{ detailProductData.category.title }}
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
-            Носки с принтом мороженое
+            {{ detailProductData.title }}
           </a>
         </li>
       </ul>
     </div>
 
     <section class="item">
-      <div class="item__pics pics">
+      <div class="item__pics pics" v-if="detailProductData.colors">
         <div class="pics__wrapper">
-          <img width="570" height="570" src="img/product-square-1.jpg" srcset="img/product-square-1@2x.jpg 2x" alt="Название товара">
+          <img width="570" height="570" :src="detailProductData.colors[0].gallery[0].file.url" :alt="detailProductData.title">
         </div>
-        <ul class="pics__list">
+        <ul class="pics__list" v-if="detailProductData.colors.length > 1">
           <li class="pics__item">
             <a href="" class="pics__link pics__link--current">
               <img width="98" height="98" src="img/product-square-2.jpg" srcset="img/product-square-2@2x.jpg 2x" alt="Название товара">
@@ -40,31 +40,17 @@
       </div>
 
       <div class="item__info">
-        <span class="item__code">Артикул: 150030</span>
+        <span class="item__code">Артикул: {{ detailProductData.id }}</span>
         <h2 class="item__title">
-          Смартфон Xiaomi Mi Mix 3 6/128GB
+          {{ detailProductData.title }}
         </h2>
         <div class="item__form">
           <form class="form" action="#" method="POST">
             <div class="item__row item__row--center">
-              <div class="form__counter">
-                <button type="button" aria-label="Убрать один товар">
-                  <svg width="12" height="12" fill="currentColor">
-                    <use xlink:href="#icon-minus"></use>
-                  </svg>
-                </button>
-
-                <input type="text" value="1" name="count">
-
-                <button type="button" aria-label="Добавить один товар">
-                  <svg width="12" height="12" fill="currentColor">
-                    <use xlink:href="#icon-plus"></use>
-                  </svg>
-                </button>
-              </div>
+              <BaseCounter :current-value.sync="productQuantity" />
 
               <b class="item__price">
-                18 990 ₽
+                {{ detailProductData.price | numberFormat}} ₽
               </b>
             </div>
 
@@ -95,13 +81,11 @@
                 </ul>
               </fieldset>
 
-              <fieldset class="form__block">
+              <fieldset class="form__block" v-if="detailProductData.sizes">
                 <legend class="form__legend">Размер</legend>
                 <label class="form__label form__label--small form__label--select">
                   <select class="form__select" type="text" name="category">
-                    <option value="value1">37-39</option>
-                    <option value="value2">40-42</option>
-                    <option value="value3">42-50</option>
+                    <option :value="size.id" v-for="size in detailProductData.sizes" :key="size.id">{{ size.title }}</option>
                   </select>
                 </label>
               </fieldset>
@@ -153,7 +137,34 @@
 </template>
 
 <script>
-export default {
+/* eslint-disable space-before-function-paren */
+import { mapActions, mapState } from 'vuex'
+import numberFormat from '@/helpers/numberFormat'
+import BaseCounter from '@/components/base/BaseCounter'
 
+export default {
+  data() {
+    return {
+      productQuantity: 1
+    }
+  },
+  components: { BaseCounter },
+  filters: { numberFormat },
+  computed: {
+    ...mapState({
+      detailProductData: state => state.detailProductData
+    })
+  },
+  methods: {
+    ...mapActions(['loadDetailProduct'])
+  },
+  watch: {
+    '$route.params.id': {
+      handler() {
+        this.loadDetailProduct(this.$route.params.id)
+      },
+      immediate: true
+    }
+  }
 }
 </script>

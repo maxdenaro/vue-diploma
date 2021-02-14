@@ -16,6 +16,8 @@ export default new Vuex.Store({
   state: {
     userAccessKey: null,
     productsData: {},
+    detailProductData: {},
+    cartProducts: [],
     categoriesData: [],
     materialsData: [],
     seasonsData: [],
@@ -33,6 +35,9 @@ export default new Vuex.Store({
     },
     loadSeas(state, seasons) {
       state.seasonsData = seasons
+    },
+    loadDetailProd(state, product) {
+      state.detailProductData = product
     },
     loaderOn(state) {
       state.isProductsLoading = true
@@ -80,6 +85,13 @@ export default new Vuex.Store({
         axios
           .get(`${API_BASE_URL}/api/seasons`)
           .then((response) => commit('loadSeas', response.data.items))
+      }, 0)
+    },
+    loadDetailProduct({ commit }, id) {
+      setTimeout(() => {
+        axios
+          .get(`${API_BASE_URL}/api/products/${id}`)
+          .then((response) => commit('loadDetailProd', response.data))
       }, 0)
     }
   },
