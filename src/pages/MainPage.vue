@@ -84,7 +84,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadProducts']),
+    ...mapActions('productModule', ['loadProducts']),
     paginate() {
       this.$emit('paginate', this.page)
     }
