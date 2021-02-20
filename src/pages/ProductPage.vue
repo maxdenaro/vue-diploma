@@ -45,7 +45,7 @@
           {{ detailProductData.title }}
         </h2>
         <div class="item__form">
-          <form class="form" action="#" method="POST">
+          <form class="form" action="#" method="POST" @submit.prevent="addToCart">
             <div class="item__row item__row--center">
               <BaseCounter :current-value.sync="productQuantity" />
 
@@ -57,28 +57,8 @@
             <div class="item__row">
               <fieldset class="form__block">
                 <legend class="form__legend">Цвет</legend>
-                <ul class="colors colors--black">
-                  <li class="colors__item">
-                    <label class="colors__label">
-                      <input class="colors__radio sr-only" type="radio" name="color-item" value="blue" checked="">
-                      <span class="colors__value" style="background-color: #73B6EA;">
-                      </span>
-                    </label>
-                  </li>
-                  <li class="colors__item">
-                    <label class="colors__label">
-                      <input class="colors__radio sr-only" type="radio" name="color-item" value="yellow">
-                      <span class="colors__value" style="background-color: #FFBE15;">
-                      </span>
-                    </label>
-                  </li>
-                  <li class="colors__item">
-                    <label class="colors__label">
-                      <input class="colors__radio sr-only" type="radio" name="color-item" value="gray">
-                      <span class="colors__value" style="background-color: #939393;">
-                    </span></label>
-                  </li>
-                </ul>
+                <BaseColorsList :colors="colors" :current-color.sync="currentColor" class="colors--black" />
+                {{ colorId }}
               </fieldset>
 
               <fieldset class="form__block" v-if="detailProductData.sizes">
@@ -141,22 +121,48 @@
 import { mapActions, mapState } from 'vuex'
 import numberFormat from '@/helpers/numberFormat'
 import BaseCounter from '@/components/base/BaseCounter'
+import BaseColorsList from '@/components/base/BaseColorsList'
 
 export default {
   data() {
     return {
-      productQuantity: 1
+      productQuantity: 1,
+      colorId: 0
     }
   },
-  components: { BaseCounter },
+  components: { BaseCounter, BaseColorsList },
   filters: { numberFormat },
   computed: {
     ...mapState({
       detailProductData: state => state.detailProductData
-    })
+    }),
+    colors() {
+      return this.detailProductData.colors
+    },
+    currentColor: {
+      get() {
+        return this.detailProductData.colors ? this.detailProductData.colors[0].color.id : 0
+      },
+      set(value) {
+        this.colorId = value
+        console.log(value)
+      }
+    }
   },
   methods: {
-    ...mapActions(['loadDetailProduct'])
+    ...mapActions(['loadDetailProduct']),
+    ...mapActions(['addProductToCart']),
+    addToCart() {
+      console.log(this.detailProductData)
+      console.log(this.productQuantity)
+      /* временный запрос */
+      this.addProductToCart({
+        productId: this.detailProductData.id,
+        colorId: this.detailProductData.colors[0].color.id,
+        sizeId: this.detailProductData.sizes[0].id,
+        quantity: this.productQuantity
+      })
+    }
   },
   watch: {
     '$route.params.id': {

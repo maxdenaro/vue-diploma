@@ -7,11 +7,25 @@
 </template>
 
 <script>
+/* eslint-disable space-before-function-paren */
 import Header from '@/components/base/Header.vue'
 import Footer from '@/components/base/Footer.vue'
+import { mapActions, mapMutations } from 'vuex'
 
 export default {
-  components: { Header, Footer }
+  components: { Header, Footer },
+  methods: {
+    ...mapActions(['loadCart']),
+    ...mapMutations(['updateUserAccessKey'])
+  },
+  created() {
+    const userAccessKey = localStorage.getItem('userAccessKey')
+    if (userAccessKey) {
+      this.updateUserAccessKey(userAccessKey)
+    }
+
+    this.loadCart()
+  }
 }
 </script>
 

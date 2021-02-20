@@ -18,7 +18,7 @@
         <label class="form__label form__label--select">
           <select class="form__select" type="text" name="category" v-model.number="currentCategoryId">
             <option value="0">Все категории</option>
-            <option :value="category.id" v-for="category in categoriesComp"
+            <option :value="category.id" v-for="category in categoriesData"
             :key="category.id">{{ category.title }}</option>
           </select>
         </label>
@@ -26,7 +26,7 @@
 
       <fieldset class="form__block">
         <legend class="form__legend">Материал</legend>
-        <CheckboxList :checkbox-list-data="materialsComp" :current-check.sync="currentFiltMaterials" />
+        <CheckboxList :checkbox-list-data="materialsData" :current-check.sync="currentFiltMaterials" />
       </fieldset>
 
       <fieldset class="form__block">
@@ -72,15 +72,15 @@ export default {
       categoriesData: state => state.categoriesData,
       materialsData: state => state.materialsData,
       seasonsData: state => state.seasonsData
-    }),
-    categoriesComp() {
-      // временное решение, пока не готова апишка
-      return this.categoriesData.filter((item) => item.title !== 'test')
-    },
-    materialsComp() {
-      // временное решение, пока не готова апишка
-      return this.materialsData.filter((item) => item.title !== 'test')
-    }
+    })
+    // categoriesComp() {
+    //   // временное решение, пока не готова апишка
+    //   return this.categoriesData.filter((item) => item.title !== 'test')
+    // },
+    // materialsComp() {
+    //   // временное решение, пока не готова апишка
+    //   return this.materialsData.filter((item) => item.title !== 'test')
+    // }
   },
   methods: {
     ...mapActions(['loadCategories', 'loadMaterials', 'loadSeasons']),

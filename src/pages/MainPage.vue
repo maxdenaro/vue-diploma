@@ -26,6 +26,7 @@
 
         <Preloader v-if="preloader" />
 
+        <div class="no-products" v-if="!preloader && countProducts === 0">Товаров по выбранным фильтрам нет</div>
         <transition name="fade">
           <ProductList v-if="!preloader" :products="products" />
         </transition>
@@ -81,17 +82,9 @@ export default {
           mainImage: item.colors[0].gallery ? item.colors[0].gallery[0].file.url : 'img/no-product-image-available.png'
         }
       })
-    }
-  },
-  methods: {
-    ...mapActions('productModule', ['loadProducts']),
-    paginate() {
-      this.$emit('paginate', this.page)
-    }
-  },
-  created() {
-    this.loadProducts(
-      {
+    },
+    currentFilters() {
+      return {
         categoryId: this.filterCategoryId,
         materialIds: this.filterMaterials,
         seasonIds: this.filterSeasons,
@@ -99,80 +92,36 @@ export default {
         limit: this.productsPerPage,
         minPrice: this.filterPriceFrom,
         maxPrice: this.filterPriceTo
-      })
+      }
+    }
+  },
+  methods: {
+    ...mapActions(['loadProducts']),
+    paginate() {
+      this.$emit('paginate', this.page)
+    }
+  },
+  created() {
+    this.loadProducts(this.currentFilters)
   },
   watch: {
     page() {
-      this.loadProducts(
-        {
-          categoryId: this.filterCategoryId,
-          materialIds: this.filterMaterials,
-          seasonIds: this.filterSeasons,
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo
-        })
+      this.loadProducts(this.currentFilters)
     },
     filterPriceFrom() {
-      this.loadProducts(
-        {
-          categoryId: this.filterCategoryId,
-          materialIds: this.filterMaterials,
-          seasonIds: this.filterSeasons,
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo
-        })
+      this.loadProducts(this.currentFilters)
     },
     filterPriceTo() {
-      this.loadProducts(
-        {
-          categoryId: this.filterCategoryId,
-          materialIds: this.filterMaterials,
-          seasonIds: this.filterSeasons,
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo
-        })
+      this.loadProducts(this.currentFilters)
     },
     filterCategoryId() {
-      this.loadProducts(
-        {
-          categoryId: this.filterCategoryId,
-          materialIds: this.filterMaterials,
-          seasonIds: this.filterSeasons,
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo
-        })
+      this.loadProducts(this.currentFilters)
     },
     filterMaterials() {
-      this.loadProducts(
-        {
-          categoryId: this.filterCategoryId,
-          materialIds: this.filterMaterials,
-          seasonIds: this.filterSeasons,
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo
-        })
+      this.loadProducts(this.currentFilters)
     },
     filterSeasons() {
-      this.loadProducts(
-        {
-          categoryId: this.filterCategoryId,
-          materialIds: this.filterMaterials,
-          seasonIds: this.filterSeasons,
-          page: this.page,
-          limit: this.productsPerPage,
-          minPrice: this.filterPriceFrom,
-          maxPrice: this.filterPriceTo
-        })
+      this.loadProducts(this.currentFilters)
     }
   }
 }
@@ -184,5 +133,11 @@ export default {
   }
   .fade-enter, .fade-leave-to {
     opacity: 0;
+  }
+
+  .no-products {
+    padding: 30px;
+    font-size: 18px;
+    text-align: center;
   }
 </style>
