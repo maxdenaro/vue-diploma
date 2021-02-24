@@ -8,10 +8,6 @@ import { API_BASE_URL } from '../config'
 
 Vue.use(Vuex)
 
-const productModule = {
-  namespaced: true
-}
-
 export default new Vuex.Store({
   state: {
     userAccessKey: null,
@@ -91,11 +87,12 @@ export default new Vuex.Store({
       }, 0)
     },
     loadDetailProduct({ commit }, id) {
-      setTimeout(() => {
-        axios
-          .get(`${API_BASE_URL}/api/products/${id}`)
-          .then((response) => commit('loadDetailProd', response.data))
-      }, 0)
+      return axios
+        .get(`${API_BASE_URL}/api/products/${id}`)
+        .then((response) => {
+          commit('loadDetailProd', response.data)
+          return response.data
+        })
     },
     loadCart(context) {
       axios
@@ -131,8 +128,5 @@ export default new Vuex.Store({
           // context.commit('syncCartProducts')
         })
     }
-  },
-  modules: {
-    productModule: productModule
   }
 })

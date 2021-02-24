@@ -23,17 +23,12 @@
     <section class="item">
       <div class="item__pics pics" v-if="detailProductData.colors">
         <div class="pics__wrapper">
-          <img width="570" height="570" :src="detailProductData.colors[0].gallery[0].file.url" :alt="detailProductData.title">
+          <img width="570" height="570" :src="currentImage" :alt="detailProductData.title">
         </div>
-        <ul class="pics__list" v-if="detailProductData.colors.length > 1">
-          <li class="pics__item">
-            <a href="" class="pics__link pics__link--current">
-              <img width="98" height="98" src="img/product-square-2.jpg" srcset="img/product-square-2@2x.jpg 2x" alt="Название товара">
-            </a>
-          </li>
-          <li class="pics__item">
-            <a href="" class="pics__link">
-              <img width="98" height="98" src="img/product-square-3.jpg" srcset="img/product-square-3@2x.jpg 2x" alt="Название товара">
+        <ul class="pics__list">
+          <li class="pics__item" v-for="image in currentImages" :key="image.file.url">
+            <a href="" class="pics__link pics__link--current" @click.prevent="currentImage = image.file.url">
+              <img width="98" height="98" :src="image.file.url" alt="Название товара">
             </a>
           </li>
         </ul>
@@ -50,15 +45,14 @@
               <BaseCounter :current-value.sync="productQuantity" />
 
               <b class="item__price">
-                {{ detailProductData.price | numberFormat}} ₽
+                {{ detailProductData.price | numberFormat }} ₽
               </b>
             </div>
 
             <div class="item__row">
               <fieldset class="form__block">
                 <legend class="form__legend">Цвет</legend>
-                <BaseColorsList :colors="colors" :current-color.sync="currentColor" class="colors--black" />
-                {{ colorId }}
+                <BaseColorsList :colors="colors" :current-color.sync="currentColorId" class="colors--black" />
               </fieldset>
 
               <fieldset class="form__block" v-if="detailProductData.sizes">
@@ -127,7 +121,9 @@ export default {
   data() {
     return {
       productQuantity: 1,
-      colorId: 0
+      currentColorId: null,
+      currentImage: null,
+      currentSizeId: null
     }
   },
   components: { BaseCounter, BaseColorsList },
@@ -137,16 +133,17 @@ export default {
       detailProductData: state => state.detailProductData
     }),
     colors() {
-      return this.detailProductData.colors
+      return this.detailProductData.colors && this.detailProductData.colors.map(c => c.color)
     },
-    currentColor: {
-      get() {
-        return this.detailProductData.colors ? this.detailProductData.colors[0].color.id : 0
-      },
-      set(value) {
-        this.colorId = value
-        console.log(value)
-      }
+    currentColor() {
+      console.log(this.detailProductData)
+      return this.detailProductData.colors.find(c => c.color.id === this.currentColorId)
+    },
+    currentImages() {
+      return this.currentColorId ? this.currentColor.gallery : []
+    },
+    currentSize() {
+      return this.detailProductData.sizes.find(s => s.id === this.currentSizeId)
     }
   },
   methods: {
@@ -156,21 +153,31 @@ export default {
       console.log(this.detailProductData)
       console.log(this.productQuantity)
       /* временный запрос */
-      this.addProductToCart({
-        productId: this.detailProductData.id,
-        colorId: this.detailProductData.colors[0].color.id,
-        sizeId: this.detailProductData.sizes[0].id,
-        quantity: this.productQuantity
-      })
+      // this.addProductToCart({
+      //   productId: this.detailProductData.id,
+      //   colorId: this.detailProductData.colors[0].color.id,
+      //   sizeId: this.detailProductData.sizes[0].id,
+      //   quantity: this.productQuantity
+      // })
     }
   },
   watch: {
     '$route.params.id': {
       handler() {
-        this.loadDetailProduct(this.$route.params.id)
+        this.loadDetailProduct(this.$route.params.id).then(e => {
+          console.log(e.colors[0].color.id)
+          this.currentColorId = e.colors[0].color.id
+          this.currentSizeId = e.sizes[0].id
+        })
       },
       immediate: true
+    },
+    currentColorId() {
+      this.currentImage = this.currentColor.gallery[0].file.url
     }
+    // currentSizeId() {
+    //   this.currentImage = this.currentColor.gallery[0].file.url
+    // }
   }
 }
 </script>
