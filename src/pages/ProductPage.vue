@@ -58,7 +58,7 @@
               <fieldset class="form__block" v-if="detailProductData.sizes">
                 <legend class="form__legend">Размер</legend>
                 <label class="form__label form__label--small form__label--select">
-                  <select class="form__select" type="text" name="category">
+                  <select class="form__select" type="text" name="category" v-model="currentSizeId">
                     <option :value="size.id" v-for="size in detailProductData.sizes" :key="size.id">{{ size.title }}</option>
                   </select>
                 </label>
@@ -175,9 +175,6 @@ export default {
     currentColorId() {
       this.currentImage = this.currentColor.gallery[0].file.url
     }
-    // currentSizeId() {
-    //   this.currentImage = this.currentColor.gallery[0].file.url
-    // }
   }
 }
 </script>

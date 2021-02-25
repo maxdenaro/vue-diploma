@@ -5,24 +5,28 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import { API_BASE_URL } from '../config'
+import productModule from './modules/productModule'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  modules: {
+    productModule
+  },
   state: {
     userAccessKey: null,
-    productsData: {},
+    // productsData: {},
     detailProductData: {},
     cartProducts: [],
     categoriesData: [],
     materialsData: [],
-    seasonsData: [],
-    isProductsLoading: false
+    seasonsData: []
+    // isProductsLoading: false
   },
   mutations: {
-    loadProd(state, products) {
-      state.productsData = products
-    },
+    // loadProd(state, products) {
+    //   state.productsData = products
+    // },
     loadCat(state, categories) {
       state.categoriesData = categories
     },
@@ -35,36 +39,36 @@ export default new Vuex.Store({
     loadDetailProd(state, product) {
       state.detailProductData = product
     },
-    loaderOn(state) {
-      state.isProductsLoading = true
-    },
-    loaderOff(state) {
-      state.isProductsLoading = false
-    },
+    // loaderOn(state) {
+    //   state.isProductsLoading = true
+    // },
+    // loaderOff(state) {
+    //   state.isProductsLoading = false
+    // },
     updateUserAccessKey(state, accessKey) {
       state.userAccessKey = accessKey
     }
   },
   actions: {
-    loadProducts({ commit }, { page, limit, categoryId, minPrice, maxPrice, materialIds, seasonIds }) {
-      commit('loaderOn')
-      setTimeout(() => {
-        axios
-          .get(`${API_BASE_URL}/api/products`, {
-            params: {
-              categoryId: categoryId,
-              materialIds: materialIds,
-              seasonIds: seasonIds,
-              page: page,
-              limit: limit,
-              minPrice: minPrice,
-              maxPrice: maxPrice
-            }
-          })
-          .then((response) => commit('loadProd', response.data))
-          .then(() => commit('loaderOff'))
-      }, 0)
-    },
+    // loadProducts({ commit }, { page, limit, categoryId, minPrice, maxPrice, materialIds, seasonIds }) {
+    //   commit('loaderOn')
+    //   setTimeout(() => {
+    //     axios
+    //       .get(`${API_BASE_URL}/api/products`, {
+    //         params: {
+    //           categoryId: categoryId,
+    //           materialIds: materialIds,
+    //           seasonIds: seasonIds,
+    //           page: page,
+    //           limit: limit,
+    //           minPrice: minPrice,
+    //           maxPrice: maxPrice
+    //         }
+    //       })
+    //       .then((response) => commit('loadProd', response.data))
+    //       .then(() => commit('loaderOff'))
+    //   }, 0)
+    // },
     loadCategories({ commit }) {
       setTimeout(() => {
         axios
