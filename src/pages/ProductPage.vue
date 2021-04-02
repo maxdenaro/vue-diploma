@@ -25,7 +25,7 @@
         <div class="pics__wrapper">
           <img width="570" height="570" :src="currentImage" :alt="detailProductData.title">
         </div>
-        <ul class="pics__list">
+        <ul class="pics__list" v-if="currentColor">
           <li class="pics__item" v-for="image in currentImages" :key="image.file.url">
             <a href="" class="pics__link pics__link--current" @click.prevent="currentImage = image.file.url">
               <img width="98" height="98" :src="image.file.url" alt="Название товара">

@@ -67,7 +67,7 @@ export default {
     countProducts() {
       return this.productsData.pagination ? this.productsData.pagination.total : 0
     },
-    ...mapState({
+    ...mapState('productModule', {
       productsData: state => state.productsData,
       preloader: state => state.isProductsLoading
     }),
@@ -96,7 +96,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loadProducts']),
+    ...mapActions('productModule', ['loadProducts']),
     paginate() {
       this.$emit('paginate', this.page)
     }
