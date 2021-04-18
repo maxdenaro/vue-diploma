@@ -14,6 +14,7 @@
       {{ product.price | numberFormat }} ₽
     </span>
 
+    <!-- <BaseColorsList :colors="colors" :current-color.sync="currentColorId" class="colors--black" /> -->
     <ul class="colors colors--black">
       <li class="colors__item">
         <label class="colors__label">
@@ -42,8 +43,10 @@
 
 <script>
 import numberFormat from '@/helpers/numberFormat'
+// import BaseColorsList from '@/components/base/BaseColorsList'
 
 export default {
+  // components: { BaseColorsList },
   props: {
     product: Object
   },

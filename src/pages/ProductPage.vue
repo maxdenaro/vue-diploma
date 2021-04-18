@@ -168,6 +168,12 @@ export default {
           console.log(e.colors[0].color.id)
           this.currentColorId = e.colors[0].color.id
           this.currentSizeId = e.sizes[0].id
+        }).catch((error) => {
+          if (error.response.status === 404) {
+            this.$router.push({
+              name: 'notFound'
+            })
+          }
         })
       },
       immediate: true
