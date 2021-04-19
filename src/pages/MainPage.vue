@@ -79,6 +79,7 @@ export default {
           title: item.title,
           price: item.price,
           id: item.id,
+          colors: item.colors,
           mainImage: item.colors[0].gallery ? item.colors[0].gallery[0].file.url : 'img/no-product-image-available.png'
         }
       })
