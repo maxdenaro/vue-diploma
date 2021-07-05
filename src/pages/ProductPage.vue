@@ -151,8 +151,13 @@ export default {
     ...mapActions(['addProductToCart']),
     addToCart() {
       console.log(this.detailProductData)
-      console.log(this.productQuantity)
       /* временный запрос */
+      this.addProductToCart({
+        productId: this.detailProductData.id,
+        colorId: this.currentColorId,
+        sizeId: this.currentSizeId,
+        quantity: this.productQuantity
+      })
       // this.addProductToCart({
       //   productId: this.detailProductData.id,
       //   colorId: this.detailProductData.colors[0].color.id,

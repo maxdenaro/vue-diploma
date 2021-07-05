@@ -15,18 +15,14 @@ export default new Vuex.Store({
   },
   state: {
     userAccessKey: null,
-    // productsData: {},
     detailProductData: {},
     cartProducts: [],
+    cartProductsData: [],
     categoriesData: [],
     materialsData: [],
     seasonsData: []
-    // isProductsLoading: false
   },
   mutations: {
-    // loadProd(state, products) {
-    //   state.productsData = products
-    // },
     loadCat(state, categories) {
       state.categoriesData = categories
     },
@@ -39,36 +35,26 @@ export default new Vuex.Store({
     loadDetailProd(state, product) {
       state.detailProductData = product
     },
-    // loaderOn(state) {
-    //   state.isProductsLoading = true
-    // },
-    // loaderOff(state) {
-    //   state.isProductsLoading = false
-    // },
     updateUserAccessKey(state, accessKey) {
       state.userAccessKey = accessKey
+    },
+    resetCart(state) {
+      state.cartProducts = []
+      state.cartProductsData = []
+    },
+    updateCartProductsData(state, items) {
+      state.cartProductsData = items
+    },
+    syncCartProducts(state) {
+      state.cartProducts = state.cartProductsData.map((item) => {
+        return {
+          productId: item.product.id,
+          amount: item.quantity
+        }
+      })
     }
   },
   actions: {
-    // loadProducts({ commit }, { page, limit, categoryId, minPrice, maxPrice, materialIds, seasonIds }) {
-    //   commit('loaderOn')
-    //   setTimeout(() => {
-    //     axios
-    //       .get(`${API_BASE_URL}/api/products`, {
-    //         params: {
-    //           categoryId: categoryId,
-    //           materialIds: materialIds,
-    //           seasonIds: seasonIds,
-    //           page: page,
-    //           limit: limit,
-    //           minPrice: minPrice,
-    //           maxPrice: maxPrice
-    //         }
-    //       })
-    //       .then((response) => commit('loadProd', response.data))
-    //       .then(() => commit('loaderOff'))
-    //   }, 0)
-    // },
     loadCategories({ commit }) {
       setTimeout(() => {
         axios
@@ -110,8 +96,8 @@ export default new Vuex.Store({
             localStorage.setItem('userAccessKey', response.data.user.accessKey)
             context.commit('updateUserAccessKey', response.data.user.accessKey)
           }
-          // context.commit('updateCartProductsData', response.data.items)
-          // context.commit('syncCartProducts')
+          context.commit('updateCartProductsData', response.data.items)
+          context.commit('syncCartProducts')
         })
     },
     addProductToCart(context, { productId, colorId, sizeId, quantity }) {
@@ -128,8 +114,8 @@ export default new Vuex.Store({
         })
         .then((response) => {
           console.log(response.data)
-          // context.commit('updateCartProductsData', response.data.items)
-          // context.commit('syncCartProducts')
+          context.commit('updateCartProductsData', response.data.items)
+          context.commit('syncCartProducts')
         })
     }
   }

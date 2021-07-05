@@ -1,7 +1,7 @@
 <template>
   <li class="catalog__item">
     <router-link class="catalog__pic" :to="{name: 'product', params: {id: product.id}}">
-      <img :src="product.mainImage" :alt="product.title">
+      <img :src="computedImage" :alt="product.title">
     </router-link>
 
     <h3 class="catalog__title">
@@ -14,30 +14,7 @@
       {{ product.price | numberFormat }} ₽
     </span>
 
-    <BaseColorsList :colors="product.colors" :current-color.sync="currentColor" class="colors--black" />
-    <ul class="colors colors--black">
-      <li class="colors__item">
-        <label class="colors__label">
-          <input class="colors__radio sr-only" type="radio" name="color-1" value="#73B6EA" checked="">
-          <span class="colors__value" style="background-color: #73B6EA;">
-          </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label">
-          <input class="colors__radio sr-only" type="radio" name="color-1" value="#8BE000">
-          <span class="colors__value" style="background-color: #8BE000;">
-          </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label class="colors__label">
-          <input class="colors__radio sr-only" type="radio" name="color-1" value="#222">
-          <span class="colors__value" style="background-color: #222;">
-          </span>
-        </label>
-      </li>
-    </ul>
+    <BaseColorsList :colors="colors" :current-color.sync="currentColor" class="colors--black" />
   </li>
 </template>
 
@@ -49,12 +26,21 @@ export default {
   components: { BaseColorsList },
   data () {
     return {
-      currentColor: 5
+      currentColor: this.product.colors[0].color.id
     }
   },
   props: {
     product: Object
   },
-  filters: { numberFormat }
+  filters: { numberFormat },
+  computed: {
+    colors () {
+      return this.product.colors.map(c => c.color)
+    },
+    computedImage () {
+      const color = this.product.colors.find(c => c.color.id === this.currentColor)
+      return color.gallery[0].file.url
+    }
+  }
 }
 </script>
