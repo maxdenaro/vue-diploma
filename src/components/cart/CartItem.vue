@@ -24,7 +24,8 @@
       {{ item.product.price | numberFormat }} ₽
     </b>
 
-    <button class="product__del button-del" type="button" aria-label="Удалить товар из корзины">
+    <button class="product__del button-del" type="button"
+    aria-label="Удалить товар из корзины" @click.prevent="deleteProduct(item.id)">
       <svg width="20" height="20" fill="currentColor">
         <use xlink:href="#icon-close"></use>
       </svg>
@@ -51,14 +52,17 @@ export default {
       },
       set (value) {
         this.updateCartProductsQuantity({
-          productId: this.item.product.id,
+          productId: this.item.id,
           quantity: this.item.quantity
         })
       }
     }
   },
   methods: {
-    ...mapActions(['updateCartProductsQuantity'])
+    ...mapActions(['updateCartProductsQuantity']),
+    deleteProduct (productId) {
+      this.$store.dispatch('deleteCardProd', { productId })
+    }
   }
 }
 </script>

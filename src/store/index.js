@@ -58,6 +58,9 @@ export default new Vuex.Store({
         }
       })
     },
+    deleteCartProduct(state, payLoad) {
+      state.cartProducts = state.cartProducts.filter((item) => item.productId !== payLoad.productId)
+    },
     updateCartProductsAmount(state, { productId, amount }) {
       const item = state.cartProducts.find((el) => el.productId === productId)
 
@@ -138,9 +141,29 @@ export default new Vuex.Store({
 
       return axios
         .put(`${API_BASE_URL}/api/baskets/products`, {
-          productId: productId,
+          basketItemId: productId,
           quantity: quantity
         }, {
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+        .then((response) => {
+          context.commit('updateCartProductsData', response.data.items)
+        })
+        .catch(() => {
+          context.commit('syncCartProducts')
+        })
+    },
+    deleteCardProd(context, { productId }) {
+      context.commit('deleteCartProduct', { productId })
+
+      return axios
+        .delete(`${API_BASE_URL}/api/baskets/products`, {
+          data: {
+            // eslint-disable-next-line object-shorthand
+            basketItemId: productId
+          },
           params: {
             userAccessKey: context.state.userAccessKey
           }
