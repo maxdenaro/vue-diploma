@@ -25,6 +25,16 @@ export default new Vuex.Store({
   getters: {
     cartTotalPrice(state, getters) {
       return state.cartProductsData.reduce((acc, item) => (item.product.price * item.quantity) + acc, 0)
+    },
+    cartDetailProducts(state) {
+      return state.cartProducts.map((item) => {
+        const product = state.cartProductsData.find((prod) => prod.product.id === item.productId).product
+
+        return {
+          ...item,
+          product
+        }
+      })
     }
   },
   mutations: {

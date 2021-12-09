@@ -53,7 +53,7 @@ export default {
       set (value) {
         this.updateCartProductsQuantity({
           productId: this.item.id,
-          quantity: this.item.quantity
+          quantity: value
         })
       }
     }
